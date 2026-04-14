@@ -1,0 +1,72 @@
+Trabajo práctico 1 - Backend REST
+DESCARGAR 
+
+1°-Ejecutar comandos iniciales:
+
+npm init -y //Instalamos las dependencias de node.js
+npm install express //Instalamos Express, el framework que vamos a usar para nuestras APIs
+npm install mssql //driver para conectar a SQL Server
+npm install dotenv //carga de variables del archivo .env
+
+2°- Modificar archivo .env:
+Por cuestiones de seguridad el .env deberá ser configurado por el ejecutor de este código, indicando su DB_USER y DB_PASSWORD.
+Archivo de ejemplo:
+PORT=3000
+DB_SERVER=localhost
+DB_DATABASE=DispositivosDB
+DB_USER=Raul //Ajustar a su caso.
+DB_PASSWORD=12raul3 //Ajustar a su caso.
+DB_ENCRYPT=false
+AUTH_TOKEN=1234
+
+En postman:
+Key= Autorizhation Value=1234 //lo agregamos en el header como variable para la autenticación.
+
+3°- Creación de base de datos:
+
+Se eligió SQL Server ya que es una herramienta que conozco y me gusta.
+Es necesario ejecutar los siguientes scripts en una nueva query:
+"SQLScript.sql"
+Consiste en la creación de la base de datos, la tabla de dispositivos y población con datos de prueba.
+
+4°- Correr proyecto:
+abrir la consola en la carpeta principal del proyecto y ejecutar: 
+node server.js
+
+Middlewares:
+La primera capa es logger.js, que necesita recibir un req, entregar un res y pasar la bandera del next() para pasar al siguiente middleware. La tarea de esta función es ir generando un log de las peticiones que se hacen al servidor, el método, la ruta y el timestamp. Le agregué este middleware a modo de debug y por ello siempre llama al next() sin ningún tipo de validación, no se encarga de cortar la cadena.
+La segunda capa es la principal, auth.js. Se encarga de leer el header que le pasamos con Postman, en especifico lee la Key=Autorizathion y lo compara contra la clave que espera el .env (en este caso 1234). Por eso si no se indica la key en el header o es incorrecta, corta la cadena y arroja error 401.
+La tercera capa, validación.js,  es la que nos interesa en cuanto a datos porque se encarga de validar las req entregadas, simplemente compara datos contra datos, ósea el formato de la request contra el formato esperado por este middleware.
+
+Rutas:
+Todas las rutas están simplificadas en un archivo .js dentro de la carpeta routes, para evitar repetir código en el controlador. Cada una de las rutas corresponde a la función que se le asigna en el controlador.
+
+Pruebas:
+Probé cada endpoint con Postman verificando los status codes correctos (200, 201, 400, 401, 404) y los casos de error (ID inexistente, IP inválida, sin header de autorización).
+
+Endpoints de interés:
+
+Métodos GET:
+Ver todos los dispositivos, ejecuta una consulta simple a SQL SELECT * FROM Dispositivos. Es importante respetar el script de SQL ya que el nombre de la tabla no es un parámetro, la consulta es definida.
+http://localhost:3000/dispositivos
+
+Ver todos los dispositivos con filtrado por la variable "estado" aquellos que tengan el valor "activo":
+http://localhost:3000/dispositivos?estado=activo
+Otra instrucción simple, usé filtro por parámetros (@estado) en lugar de concatenar strings para evitar SQL Injection.
+
+Ver un dispositivo en especifico:
+http://localhost:3000/dispositivos/:id
+luego de la barra, debemos indicar el ID del registro que queramos consultar, ejecuta una consulta tipo select * from {tabla} where id = @id
+
+Método POST: http://localhost:3000/dispositivos
+Este método se encarga de la inserción de nuevos registros, por lo que utiliza la instrucción INSERT de SQL.
+Para la creación de nuevos registros es necesario enviar un body en la req, en postman debemos ir a la solapa Body, seleccionar raw como tipo de texto y JSON:
+ ejemplo de req:
+{"nombre":"Router","ip":"192.168.0.1","estado":"activo","tipo":"router"}
+Si se completó la tarea con éxito, nos debería devolver un código 201 (created) y en el res, la información del nuevo registro.
+
+Método PUT: http://localhost:3000/dispositivos:id
+En este endpoint nos encargamos de la modificación de los datos, transmitiendo en el body los datos que queremos modificar, será necesario ingresar cada una de las etiquetas, ya sea nombre, ip, estado o tipo ya que si evadimos alguna de ellas, el validador nos va a dar un error 400. Utiliza una consulta tipo UPDATE.
+
+Método DELETE: http://localhost:3000/dispositivos/:id
+luego de la barra, debemos indicar el ID del registro que queramos eliminar, ejecuta una consulta tipo DELETE from {tabla} where id = @id
