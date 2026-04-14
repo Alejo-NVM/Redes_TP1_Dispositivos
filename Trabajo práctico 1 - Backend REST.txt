@@ -1,5 +1,5 @@
 Trabajo práctico 1 - Backend REST
-DESCARGAR 
+DESCARGAR COLECCION DE POSTMAN: https://trembolonaaddict.postman.co/workspace/Trembolona-Addict's-Workspace~f1639623-7f73-4640-8445-aeec39912812/collection/45342304-d196a525-16c2-423f-a7ca-bae3f2577a43?action=share&source=copy-link&creator=45342304
 
 1°-Ejecutar comandos iniciales:
 
