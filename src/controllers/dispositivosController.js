@@ -120,7 +120,6 @@ const remove = async (req, res) => {
       return res.status(404).json({ error: `Dispositivo con ID ${id} no encontrado.` });
     }
 
-    // Devolvemos el objeto que se eliminó + mensaje, útil para confirmar
     res.status(200).json({ mensaje: 'Dispositivo eliminado.', dispositivo: result.recordset[0] });
   } catch (error) {
     res.status(500).json({ error: 'Error en el servidor', detalle: error.message });
