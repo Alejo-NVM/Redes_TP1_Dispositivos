@@ -38,4 +38,3 @@ CREATE TABLE usuarios (
     password_hash NVARCHAR(255) NOT NULL,
     created_at    DATETIME2     NOT NULL DEFAULT GETUTCDATE()
 );
-SELECT * FROM Dispositivos
