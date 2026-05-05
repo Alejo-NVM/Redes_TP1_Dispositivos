@@ -22,4 +22,20 @@ VALUES ('PC-Oficina', '192.168.0.10', 'activo', 'pc'),
  ('Heladera-Smart', '192.168.0.5', 'inactivo', 'Heladera');
 GO
 
+CREATE TABLE totp_secrets (
+    id          INT IDENTITY(1,1) PRIMARY KEY,
+    email       NVARCHAR(255)   NOT NULL,
+    app_name    NVARCHAR(100)   NOT NULL,
+    secret      NVARCHAR(255)   NOT NULL,
+    created_at  DATETIME2       NOT NULL DEFAULT GETUTCDATE(),
+    updated_at  DATETIME2       NOT NULL DEFAULT GETUTCDATE(),
+    CONSTRAINT uq_email_app UNIQUE (email, app_name)
+);
+
+CREATE TABLE usuarios (
+    id            INT IDENTITY(1,1) PRIMARY KEY,
+    email         NVARCHAR(255) NOT NULL UNIQUE,
+    password_hash NVARCHAR(255) NOT NULL,
+    created_at    DATETIME2     NOT NULL DEFAULT GETUTCDATE()
+);
 SELECT * FROM Dispositivos
