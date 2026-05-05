@@ -18,6 +18,7 @@ DB_USER=Raul //Ajustar a su caso.
 DB_PASSWORD=12raul3 //Ajustar a su caso.
 DB_ENCRYPT=false
 AUTH_TOKEN=1234
+JWT_SECRET=un_string_largo_y_random_aca
 
 En postman:
 Key= Autorizhation Value=1234 //lo agregamos en el header como variable para la autenticación.
